@@ -1,0 +1,58 @@
+---
+layout: null
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ site.title | escape }} — {{ site.description | escape }}</title>
+  <meta name="description" content="Selected architectural work by {{ site.title | escape }}.">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./script.js" defer></script>
+</head>
+<body id="top">
+  <a class="skip-link" href="#portfolio">Skip to portfolio</a>
+  <header class="header">
+    <a class="identity" href="#top"><strong>{{ site.title | escape }}</strong><span>{{ site.description | escape }}</span></a>
+    <nav aria-label="Portfolio links">
+      {% for file in site.static_files %}{% if file.path == '/portfolio.pdf' %}
+      <a href="./portfolio.pdf" target="_blank" rel="noopener">View PDF ↗</a>
+      <a class="download" href="./portfolio.pdf" download>Download PDF ↓</a>
+      {% endif %}{% endfor %}
+    </nav>
+  </header>
+  <main id="portfolio" tabindex="-1">
+    <div class="intro"><span>SELECTED WORKS</span><span>Scroll to explore · Click a page to enlarge</span></div>
+    <div class="pages">
+      {% assign ordered_files = site.static_files | sort: 'path' %}
+      {% assign page_count = 0 %}
+      {% for file in ordered_files %}
+        {% assign folder = file.path | slice: 0, 7 %}
+        {% assign ext = file.extname | downcase %}
+        {% if folder == '/pages/' %}
+          {% if ext == '.jpg' or ext == '.jpeg' or ext == '.png' or ext == '.webp' or ext == '.avif' %}
+            {% assign page_count = page_count | plus: 1 %}
+            {% assign image_path = file.path | remove_first: '/' %}
+            <figure class="page" id="page-{{ page_count }}">
+              <a class="page-link" href="./{{ image_path | uri_escape | escape }}" target="_blank" rel="noopener" aria-label="Enlarge portfolio page {{ page_count }}">
+                <img src="./{{ image_path | uri_escape | escape }}" alt="Architectural portfolio — page {{ page_count }}" {% if page_count == 1 %}loading="eager" fetchpriority="high"{% else %}loading="lazy"{% endif %} decoding="async">
+              </a>
+              <figcaption>PAGE {{ page_count }}</figcaption>
+            </figure>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+      {% if page_count == 0 %}<p class="empty">Portfolio coming soon.</p>{% endif %}
+    </div>
+  </main>
+  <footer><span>{{ site.title | escape }} · Architectural Portfolio</span><a href="#top">Back to top ↑</a></footer>
+  <dialog id="viewer" aria-label="Enlarged portfolio page">
+    <div class="viewer-toolbar">
+      <span id="viewer-label"></span>
+      <div><button id="zoom" type="button" aria-pressed="false">Zoom in</button><a id="original" target="_blank" rel="noopener">Open original ↗</a><button id="close" type="button" autofocus>Close ✕</button></div>
+    </div>
+    <div class="viewer-scroll"><img id="viewer-image" alt=""></div>
+  </dialog>
+</body>
+</html>

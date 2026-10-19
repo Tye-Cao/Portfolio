@@ -1,0 +1,7 @@
+title: "Tye Tianyu Cao"
+description: "Architectural Portfolio"
+# PDF optional: place portfolio.pdf alongside index.html.
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
